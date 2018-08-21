@@ -15,10 +15,25 @@ variable "key_name" {
 
 variable "key_path" {
   description = "path to your private key file"
-  default = "credential.pem"
+  default = "quhang.pem"
 }
 
 variable "aws_instance_type" {
   description = "aws instance type"
   default = "t2.nano"
+}
+
+variable "ami_id" {
+  description = "ami id"
+  default = "ami-08569b978cc4dfa10"
+}
+
+variable "zone_id" {
+  description = "hosted zone id"
+  default = "Z2F25J92GG08RZ"
+}
+
+variable "tag_name" {
+  description = "name of tags"
+  default = "quhang"
 }

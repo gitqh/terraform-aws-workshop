@@ -1,39 +1,44 @@
-provider "aws" {
-  region = "ap-southeast-1"
-}
 resource "aws_instance" "server" {
-  ami           = "ami-08569b978cc4dfa10"
-  # instance_type = "{$var.aws_instance_type}"
-  instance_type = "t2.micro"
+  ami           = "${var.ami_id}"
+  instance_type = "${var.aws_instance_type}"
   vpc_security_group_ids = ["${aws_security_group.quhang-sg.id}"] 
-  key_name = "quhang"
+  key_name = "${var.key_name}"
+  provisioner "file" {
+    connection {
+      user = "ec2-user"
+      private_key = "${file(var.key_path)}"
+    }
+    source      = "./html"
+    destination = "/tmp"
+  }
   provisioner "remote-exec" {
     connection {
       user = "ec2-user"
       private_key = "${file(var.key_path)}"
     }
-    
     inline = [
       "sudo yum install -y nginx",
-      # "sudo rm -rf /usr/share/nginx/html",
+      "sudo rm -rf /usr/share/nginx/html",
+      "sudo mv /tmp/html /usr/share/nginx",
       "sudo service nginx start"
     ]
   }
   tags {
-    Name = "quhang"
+    Name = "${var.tag_name}"
   }
 }
 
 resource "aws_security_group" "quhang-sg" {
+  name = "quhang-sg"
   ingress {
-    from_port   = 80      
-    to_port     = 80
+    from_port   = "${var.http_port}"     
+    to_port     = "${var.http_port}"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 22      
-    to_port     = 22
+    from_port   = "${var.ssh_port}"      
+    to_port     = "${var.ssh_port}"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -46,18 +51,9 @@ resource "aws_security_group" "quhang-sg" {
   lifecycle {
     create_before_destroy = true
   }
-  tags {
-    Name = "quhang-sg"
-  }
 }
-
-# resource "aws_route53_zone" "primary" {
-#   name = "workshop.oc-tw.net."
-# }
-
 resource "aws_route53_record" "www" {
-  # zone_id = "${aws_route53_zone.primary.zone_id}"
-  zone_id = "Z2F25J92GG08RZ"
+  zone_id = "${var.zone_id}"
   name    = "quhang.workshop.oc-tw.net."
   type    = "CNAME"
   ttl     = "900"
