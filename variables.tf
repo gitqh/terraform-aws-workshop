@@ -33,6 +33,11 @@ variable "zone_id" {
   default = "Z2F25J92GG08RZ"
 }
 
+variable "domain_name" {
+  description = "domain name under workshop.oc-tw.net."
+  default = "quhang.workshop.oc-tw.net."
+}
+
 variable "tag_name" {
   description = "name of tags"
   default = "quhang"
