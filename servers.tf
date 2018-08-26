@@ -55,7 +55,7 @@ resource "aws_security_group" "quhang-sg" {
 resource "aws_route53_record" "www" {
   zone_id = "${var.zone_id}"
   name    = "${var.domain_name}"
-  type    = "CNAME"
+  type    = "A"
   ttl     = "900"
   records = ["${aws_instance.server.public_ip}"]
 }
