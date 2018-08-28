@@ -1,0 +1,4 @@
+*.css linguist-language=hcl
+*.js linguist-language=hcl
+*.less linguist-language=hcl
+*.html linguist-language=hcl
