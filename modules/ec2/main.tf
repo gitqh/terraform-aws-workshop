@@ -27,7 +27,7 @@ resource "aws_instance" "server" {
   tags = "${map("Name", "${var.tag_name}")}"
 }
 
-resource "tls_private_key" "bootstrap_private_key" {
+resource "terraform taint tls_private_key.example" "bootstrap_private_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
